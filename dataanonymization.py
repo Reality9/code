@@ -1,7 +1,8 @@
 
-import sys, time
+import sys, time, hashlib, re, base64
 data = sys.argv[1]
 key = sys.argv[2]
+keyhash = hashlib.sha512(key)
 origkey = key
 def xor_crypt_string(data, key=key, encode=False, decode=False):
     from itertools import izip, cycle
@@ -13,29 +14,38 @@ def xor_crypt_string(data, key=key, encode=False, decode=False):
         return base64.encodestring(xored).strip()
     return xored
 
-cipherdata = xor_crypt_string(data, encode=False)
+cipherdata = xor_crypt_string(data, encode=True)
 
 hex = key.encode("hex")
 number = int(hex, base=16)
 
 c=0
 for i in range(int(str(number)[:7])):
-	c+=1;newkey = "";
-	if c == (len(key)-1):
+	#key = re.sub(r'\W+', '', key)
+	newkey = "";
+	if c == (len(key)):
 		c = 0
 	try:
 		newletter = chr(ord(key[c])-c)
 	except:
 		newletter = chr(ord(origkey[c])-c)
-	i=1
+	i=0
 	for i in range(len(key)):
 		if i == c:
 			newkey+=(str(newletter))
 		else:
 			newkey+=(str(key[i]))
 	key = newkey
+
 	cipherdata = xor_crypt_string(cipherdata, key=newkey, encode=False)
-print(str(cipherdata))
+	#print(cipherdata.encode("hex"))
+	c+=1;
+
+print(str(cipherdata).encode("hex"))
+print(base64.encodestring(cipherdata).strip())
+print(str(hashlib.sha512(base64.encodestring(cipherdata).strip()).hexdigest()))
+
+
 
 
 
