@@ -1,4 +1,6 @@
 
+#Use: This process is only to be used to encrypt a data element in a deterministic way. Process was intented for data conversion, not streaming data across TCP/IP sessions.
+
 import sys, time, hashlib, re, base64
 data = sys.argv[1]
 key = sys.argv[2]
